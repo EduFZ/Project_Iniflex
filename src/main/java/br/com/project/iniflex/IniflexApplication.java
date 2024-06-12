@@ -9,11 +9,9 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 //@SpringBootApplication
@@ -51,18 +49,31 @@ public class IniflexApplication {
 					func.getNome(), func.getDataNasc().format(formatter), decimalFormat.format(func.getSalario()), func.getFuncao());
 		}
 
-		// Atualizar salários com 10% de aumento
+		// Os funcionários receberam 10% de aumento de salário, atualizar a lista de funcionários com novo valor.
 		funcionarios.forEach(f -> f.setSalario(f.getSalario().multiply(BigDecimal.valueOf(1.1))));
 
-		// Agrupar funcionários por função
+		// Agrupar os funcionários por função em um MAP, sendo a chave a “função” e o valor a “lista de funcionários”.
 		Map<String, List<Funcionario>> funcionariosPorFuncao = funcionarios.stream().collect(Collectors.groupingBy(Funcionario::getFuncao));
 
-		// Imprimir funcionários por função
+		// Imprimir os funcionários, agrupados por função.
 		System.out.println("\nFuncionários por Função");
 		funcionariosPorFuncao.forEach((funcao, listaFuncionarios) -> {
 			System.out.println("Função: " + funcao);
 			listaFuncionarios.forEach(func -> System.out.printf("Nome: %s%n", func.getNome()));
 		});
+
+		// Imprimir os funcionários que fazem aniversário no mês 10 e 12.
+		System.out.println("\nFuncionários com aniversário no mês 10 e 12:");
+		funcionarios.stream().filter(f -> f.getDataNasc().getMonthValue() == 10 || f.getDataNasc().getMonthValue() == 12)
+				.forEach(f -> System.out.printf("Nome: %s, Data de Nascimento: %s, Salário: %s, Função: %s%n", f.getNome(), f.getDataNasc().format(formatter), decimalFormat.format(f.getSalario()), f.getFuncao()));
+
+		// Imprimir o funcionário com a maior idade, exibir os atributos: nome e idade.
+		Funcionario funcMaiorIdade = funcionarios.stream().min(Comparator.comparing(Funcionario::getDataNasc))
+				.orElseThrow(NoSuchElementException::new);
+		Integer idade = Period.between(funcMaiorIdade.getDataNasc(), LocalDate.now()).getYears();
+		System.out.printf("\nFuncionário com maior idade: \n" +
+				"Nome: %s, Idade: %s%n", funcMaiorIdade.getNome(), idade);
+
 
 	}
 
