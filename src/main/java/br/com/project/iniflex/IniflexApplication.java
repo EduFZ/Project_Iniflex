@@ -5,10 +5,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 //@SpringBootApplication
 public class IniflexApplication {
@@ -18,7 +22,12 @@ public class IniflexApplication {
 
 		List<Funcionario> funcionarios = new ArrayList<>();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("pt", "BR"));
+		symbols.setDecimalSeparator(',');
+		symbols.setGroupingSeparator('.');
+		DecimalFormat decimalFormat = new DecimalFormat("#,##0.00", symbols);
 
+		// Adicionar todos os elementos na ordem conforme anexado no enunciado
 		funcionarios.add(new Funcionario("Maria", LocalDate.of(2000, 10, 18), new BigDecimal("2009.44"), "Operador"));
 		funcionarios.add(new Funcionario("João", LocalDate.of(1990, 5, 12), new BigDecimal("2284.38"), "Operador"));
 		funcionarios.add(new Funcionario("Caio", LocalDate.of(1961, 5, 2), new BigDecimal("9836.14"), "Coordenador"));
@@ -30,7 +39,15 @@ public class IniflexApplication {
 		funcionarios.add(new Funcionario("Heloísa", LocalDate.of(2003, 5, 24), new BigDecimal("1606.85"), "Eletricista"));
 		funcionarios.add(new Funcionario("Helena", LocalDate.of(1996, 9, 2), new BigDecimal("2799.93"), "Gerente"));
 
+		// Remover funcionario João
+		funcionarios.removeIf(funcionario -> funcionario.getNome().equals("João"));
 
+		// Imprimir todos os funcionários com a formatação em data e salário
+		for (Funcionario func : funcionarios) {
+			System.out.println("Funcionarios: ");
+			System.out.printf("Nome: %s, Data Nascimento: %s, Salário: %s, Função: %s%n",
+					func.getNome(), func.getDataNasc().format(formatter), decimalFormat.format(func.getSalario()), func.getFuncao());
+		}
 
 	}
 
