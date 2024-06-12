@@ -49,6 +49,10 @@ public class IniflexApplication {
 					func.getNome(), func.getDataNasc().format(formatter), decimalFormat.format(func.getSalario()), func.getFuncao());
 		}
 
+		// Atualizar salários com 10% de aumento
+		funcionarios.forEach(f -> f.setSalario(f.getSalario().multiply(BigDecimal.valueOf(1.1))));
+
+
 	}
 
 }
