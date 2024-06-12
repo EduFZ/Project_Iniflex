@@ -13,6 +13,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 //@SpringBootApplication
 public class IniflexApplication {
@@ -52,6 +54,15 @@ public class IniflexApplication {
 		// Atualizar salários com 10% de aumento
 		funcionarios.forEach(f -> f.setSalario(f.getSalario().multiply(BigDecimal.valueOf(1.1))));
 
+		// Agrupar funcionários por função
+		Map<String, List<Funcionario>> funcionariosPorFuncao = funcionarios.stream().collect(Collectors.groupingBy(Funcionario::getFuncao));
+
+		// Imprimir funcionários por função
+		System.out.println("\nFuncionários por Função");
+		funcionariosPorFuncao.forEach((funcao, listaFuncionarios) -> {
+			System.out.println("Função: " + funcao);
+			listaFuncionarios.forEach(func -> System.out.printf("Nome: %s%n", func.getNome()));
+		});
 
 	}
 
